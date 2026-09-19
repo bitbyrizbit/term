@@ -59,15 +59,19 @@ def extract_clause_data(text: str) -> dict:
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": prompt}
             ],
-            model="llama-3.1-8b-instant", # Fast model for quick extraction
+            model="llama3-8b-8192", # Reliable, widely available Groq model
             temperature=0,
             response_format={"type": "json_object"}
         )
         
+        # Free tier Groq limits are tight; add a small delay to prevent 429 Too Many Requests
+        import time
+        time.sleep(1.5)
+        
         response_text = chat_completion.choices[0].message.content
         return json.loads(response_text)
     except Exception as e:
-        print(f"Error extracting data from Groq: {e}")
+        print(f"\n[!] GROQ API ERROR on Section: {e}\n")
         # Return a fallback empty schema
         return {
             "parties_mentioned": [],
