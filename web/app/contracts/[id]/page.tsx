@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getContractStatus, Contract } from "../../../lib/api";
+import Link from "next/link";
 
 export default function ContractPage({ params }: { params: { id: string } }) {
   const [contract, setContract] = useState<Contract | null>(null);
@@ -35,16 +36,22 @@ export default function ContractPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-4xl mx-auto mt-12 p-4">
-      <div className="mb-8 border-b pb-4">
-        <h1 className="text-3xl font-serif text-gray-900">{contract.filename}</h1>
-        <div className="flex items-center mt-2 space-x-4">
-          <span className="font-mono text-sm text-gray-500">ID: {contract.id}</span>
-          <span className={`px-2 py-1 text-xs rounded-full uppercase tracking-wider font-semibold 
-            ${contract.status === 'completed' ? 'bg-green-100 text-green-800' : 
-              contract.status === 'processing' ? 'bg-yellow-100 text-yellow-800' : 
-              'bg-red-100 text-red-800'}`}>
-            {contract.status}
-          </span>
+      <div className="flex justify-between items-center mb-8 border-b pb-4">
+        <div>
+          <h1 className="text-3xl font-serif text-gray-900 mb-2">{contract.filename}</h1>
+          <div className="flex items-center space-x-4">
+            <span className="font-mono text-sm text-gray-500">ID: {contract.id}</span>
+            <span className={`px-2 py-1 text-xs rounded-full uppercase tracking-wider font-semibold 
+              ${contract.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                contract.status === 'processing' ? 'bg-yellow-100 text-yellow-800' : 
+                'bg-red-100 text-red-800'}`}>
+              {contract.status}
+            </span>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <Link href={`/contracts/${contract.id}/graph`} className="text-sm text-blue-600 hover:underline">Knowledge Graph</Link>
+          <Link href={`/contracts/${contract.id}/obligations`} className="text-sm text-blue-600 hover:underline">Command Center</Link>
         </div>
       </div>
 
@@ -57,7 +64,7 @@ export default function ContractPage({ params }: { params: { id: string } }) {
       {contract.status === "completed" && contract.clauses && (
         <div className="space-y-8">
           {contract.clauses.map((clause) => (
-            <div key={clause.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+            <div key={clause.id} id={`clause-${clause.id}`} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm scroll-mt-24">
               <div className="flex justify-between items-start mb-4">
                 <span className="font-mono text-sm text-indigo-600 font-bold">
                   {clause.section_ref}
