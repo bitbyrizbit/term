@@ -8,7 +8,7 @@ router = APIRouter(prefix="/contracts", tags=["Obligations"])
 
 @router.get("/{contract_id}/obligations")
 def get_contract_obligations(contract_id: str):
-    clauses = db.get_contract_clauses(contract_id)
+    clauses = db.get_clauses_for_contract(contract_id)
     if not clauses:
         raise HTTPException(status_code=404, detail="Contract not found or no clauses")
         
