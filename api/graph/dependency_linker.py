@@ -21,30 +21,47 @@ def link_dependencies(G: nx.DiGraph, clauses: list):
         if ref:
             ref_map[ref.lower()] = clause
             
-    # Find cross-references
+    # Find cross-references and shared entities
     pairs_to_check = []
+    
+    # Pre-calculate parties per clause
+    clause_parties = {}
     for clause in clauses:
         ext = clause.get("extracted_data", {})
-        if not ext:
-            continue
-        refs = ext.get("references_to_other_sections", [])
-        for ref in refs:
-            # Simple matching logic
-            for mapped_ref, target_clause in ref_map.items():
-                if mapped_ref in ref.lower() or ref.lower() in mapped_ref:
-                    pairs_to_check.append((clause, target_clause))
+        clause_parties[clause["id"]] = set(ext.get("parties_mentioned", []) if ext else [])
+        
+    for i, c1 in enumerate(clauses):
+        for j, c2 in enumerate(clauses):
+            if i >= j: continue # Avoid self-checks and duplicate pairs
+            
+            ext1 = c1.get("extracted_data", {})
+            refs1 = ext1.get("references_to_other_sections", []) if ext1 else []
+            
+            # Check if c1 references c2
+            ref_match = False
+            c2_ref = c2.get("section_ref", "").lower()
+            for r in refs1:
+                if c2_ref and (c2_ref in r.lower() or r.lower() in c2_ref):
+                    ref_match = True
+                    break
                     
-    # Only process a small number to save tokens
-    for (c1, c2) in pairs_to_check[:3]:
-        # Avoid checking a clause against itself
-        if c1["id"] != c2["id"]:
-            check_clause_conflict(G, client, c1, c2)
+            # Check if they share a party (e.g. both involve Vendor)
+            party_match = len(clause_parties[c1["id"]].intersection(clause_parties[c2["id"]])) > 0
+            
+            if ref_match or party_match:
+                pairs_to_check.append((c1, c2))
+                    
+    # Process pairs to find dependencies (limit to 6 to save time/tokens)
+    for (c1, c2) in pairs_to_check[:6]:
+        check_clause_conflict(G, client, c1, c2)
         
     return G
 
 def check_clause_conflict(G: nx.DiGraph, client, c1, c2):
     prompt = f"""
-    Analyze these two clauses for logical conflicts or dependencies.
+    Analyze these two clauses for logical conflicts or dependencies. 
+    Look specifically for escalation paths (e.g. if one clause covers a failure/breach, does the other cover termination/cancellation?).
+    
     Clause 1 ({c1.get('section_ref')}): {c1.get('text')}
     Clause 2 ({c2.get('section_ref')}): {c2.get('text')}
     
@@ -52,7 +69,8 @@ def check_clause_conflict(G: nx.DiGraph, client, c1, c2):
     {{
       "has_conflict": boolean,
       "conflict_reason": "string describing the conflict",
-      "depends_on": boolean
+      "depends_on": boolean,
+      "dependency_reason": "why they depend on each other"
     }}
     """
     try:
