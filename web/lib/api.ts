@@ -103,3 +103,10 @@ export async function getRiskRadar(id: string): Promise<any> {
   return res.json();
 }
 
+
+export async function getAllContracts(): Promise<any[]> {
+  const res = await fetch(`${API_BASE}/contracts`);
+  if (!res.ok) throw new Error('Failed to fetch contracts');
+  return res.json();
+}
+

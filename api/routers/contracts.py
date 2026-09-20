@@ -77,6 +77,11 @@ async def upload_contract(background_tasks: BackgroundTasks, file: UploadFile = 
         status="processing"
     )
 
+@router.get("", response_model=list)
+def get_all_contracts():
+    contracts = db.client.table("contracts").select("*").execute()
+    return contracts.data
+
 @router.get("/{contract_id}", response_model=ContractStatusResponse)
 async def get_contract(contract_id: str):
     contract = db.get_contract(contract_id)
