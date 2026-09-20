@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import contracts, graph, obligations
+from routers import contracts, graph, obligations, events, qa
 
 app = FastAPI(title="Term API")
 
@@ -16,6 +16,8 @@ app.add_middleware(
 app.include_router(contracts.router, prefix="/contracts", tags=["contracts"])
 app.include_router(graph.router)
 app.include_router(obligations.router)
+app.include_router(events.router)
+app.include_router(qa.router)
 
 @app.get("/")
 def read_root():

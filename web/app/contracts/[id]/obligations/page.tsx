@@ -37,6 +37,8 @@ export default function ObligationsCommandCenter({ params }: { params: { id: str
         <div className="flex gap-4">
           <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document View</Link>
           <Link href={`/contracts/${params.id}/graph`} className="text-sm text-blue-600 hover:underline">Knowledge Graph</Link>
+          <Link href={`/contracts/${params.id}/simulate`} className="text-sm text-blue-600 hover:underline">Simulator</Link>
+          <Link href={`/contracts/${params.id}/ask`} className="text-sm text-blue-600 hover:underline">Q&A</Link>
         </div>
       </div>
 
