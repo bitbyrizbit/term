@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { getContractObligations, getContractStatus } from "../../../../lib/api";
 import ClauseSourceLink from "../../../../components/ClauseSourceLink";
 import ContractNav from "../../../../components/ContractNav";
-import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Clock, CheckCircle2, AlertCircle, Calendar } from "lucide-react";
 

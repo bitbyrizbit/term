@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { simulateEvent } from "../../../../lib/api";
 import ContractNav from "../../../../components/ContractNav";
-import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Play, ArrowRight, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

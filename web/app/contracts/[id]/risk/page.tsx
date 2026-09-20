@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { getRiskRadar } from "../../../../lib/api";
 import ContractNav from "../../../../components/ContractNav";
-import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Shield, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import ClauseSourceLink from "../../../../components/ClauseSourceLink";

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { askQuestion } from "../../../../lib/api";
 import ContractNav from "../../../../components/ContractNav";
-import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Search, AlertTriangle, ShieldCheck } from "lucide-react";
 import ClauseSourceLink from "../../../../components/ClauseSourceLink";

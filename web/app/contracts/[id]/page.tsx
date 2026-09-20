@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { getContractStatus, Contract } from "../../../lib/api";
-import ContractNav from "../../../../components/ContractNav";
 import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 

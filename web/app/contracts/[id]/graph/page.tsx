@@ -5,7 +5,6 @@ import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState,
 import "@xyflow/react/dist/style.css";
 import { getContractGraph } from "../../../../lib/api";
 import ContractNav from "../../../../components/ContractNav";
-import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import dagre from "dagre";
 

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { computeVersionDiff } from "../../../../lib/api";
 import ContractNav from "../../../../components/ContractNav";
-import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Upload, ArrowRight, ShieldAlert, FileText } from "lucide-react";
 
