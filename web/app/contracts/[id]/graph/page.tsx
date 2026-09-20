@@ -65,7 +65,7 @@ export default function KnowledgeGraph({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getContractGraph(params.id)
+    getContractGraph((params.id.replace(/%20| /g, "-")))
       .then((data) => {
         const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
           data.nodes,
@@ -74,8 +74,8 @@ export default function KnowledgeGraph({ params }: { params: { id: string } }) {
         setNodes(layoutedNodes);
         setEdges(layoutedEdges);
       })
-      .finally(() => setLoading(false));
-  }, [params.id]);
+      .catch((err) => console.error(err)).finally(() => setLoading(false));
+  }, [(params.id.replace(/%20| /g, "-"))]);
 
   return (
     <div className="max-w-8xl mx-auto px-6 lg:px-10 py-10">
@@ -109,3 +109,5 @@ export default function KnowledgeGraph({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+

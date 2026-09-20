@@ -4,6 +4,17 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
 
+def sanitize(text):
+    if not isinstance(text, str):
+        return str(text)
+    # Replace unicode dashes/hyphens with ASCII hyphen
+    text = text.replace('\u2010', '-').replace('\u2011', '-').replace('\u2012', '-').replace('\u2013', '-').replace('\u2014', '-')
+    # Replace smart quotes with straight quotes
+    text = text.replace('\u2018', "'").replace('\u2019', "'").replace('\u201c', '"').replace('\u201d', '"')
+    # Replace unicode space/bullet with standard chars
+    text = text.replace('\u2022', '*').replace('\u25a0', '-').replace('\u00a0', ' ')
+    return text
+
 def generate_pdf_report(contract_title: str, risks: list, diff_changes: list = None) -> bytes:
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
@@ -30,11 +41,11 @@ def generate_pdf_report(contract_title: str, risks: list, diff_changes: list = N
         status_color = colors.green if status == "Green" else (colors.orange if status == "Yellow" else colors.red)
         
         row = [
-            Paragraph(r.get("category", ""), normal_style),
+            Paragraph(sanitize(r.get("category", "")), normal_style),
             Paragraph(f"<font color='{status_color}'><b>{status}</b></font>", normal_style),
-            Paragraph(r.get("justification", ""), normal_style),
-            Paragraph(r.get("next_action", ""), normal_style),
-            Paragraph(r.get("source_ref", ""), normal_style)
+            Paragraph(sanitize(r.get("justification", "")), normal_style),
+            Paragraph(sanitize(r.get("next_action", "")), normal_style),
+            Paragraph(sanitize(r.get("source_ref", "")), normal_style)
         ]
         data.append(row)
         
@@ -70,3 +81,4 @@ def generate_pdf_report(contract_title: str, risks: list, diff_changes: list = N
     pdf_bytes = buffer.getvalue()
     buffer.close()
     return pdf_bytes
+
