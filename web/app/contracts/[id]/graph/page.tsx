@@ -1,40 +1,59 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
+import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { getContractGraph } from "../../../../lib/api";
-import ContractNav from "../../../../components/ContractNav";
 import Link from "next/link";
 import dagre from "dagre";
+import { Loader2 } from "lucide-react";
 
-// Simple dagre layout
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 const getLayoutedElements = (nodes: any[], edges: any[], direction = "TB") => {
-  const isHorizontal = direction === "LR";
   dagreGraph.setGraph({ rankdir: direction });
-
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: 250, height: 100 });
   });
-
   edges.forEach((edge) => {
     dagreGraph.setEdge(edge.source, edge.target);
   });
-
   dagre.layout(dagreGraph);
 
   nodes.forEach((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
-    node.targetPosition = isHorizontal ? "left" : "top";
-    node.sourcePosition = isHorizontal ? "right" : "bottom";
+    node.targetPosition = "top";
+    node.sourcePosition = "bottom";
     node.position = {
-      x: nodeWithPosition.x - 250 / 2,
-      y: nodeWithPosition.y - 100 / 2,
+      x: nodeWithPosition.x - 125,
+      y: nodeWithPosition.y - 50,
     };
-    return node;
+    
+    // Style nodes according to the new UI aesthetic
+    const ntype = node.data?.type || 'obligation';
+    let bgColor = '#fdfcf8';
+    let borderColor = '#9c937b';
+    let labelColor = '#15130e';
+    
+    if (ntype === 'trigger') {
+       bgColor = '#fbf3ee'; borderColor = '#c97744'; labelColor = '#7d3a1c';
+    } else if (ntype === 'consequence') {
+       bgColor = 'rgba(194,91,62,0.1)'; borderColor = '#c25b3e'; labelColor = '#8a3621';
+    } else if (ntype === 'condition') {
+       bgColor = 'rgba(122,155,110,0.1)'; borderColor = '#5a7d50'; labelColor = '#44603b';
+    }
+    
+    node.style = {
+      background: bgColor,
+      border: `1px solid ${borderColor}`,
+      color: labelColor,
+      borderRadius: '2px',
+      padding: '12px',
+      fontFamily: '"Inter Tight", system-ui, sans-serif',
+      fontSize: '12px',
+      width: 250,
+    };
   });
 
   return { nodes, edges };
@@ -48,76 +67,45 @@ export default function KnowledgeGraph({ params }: { params: { id: string } }) {
   useEffect(() => {
     getContractGraph(params.id)
       .then((data) => {
-        // Map types to generic or custom types
-        const initialNodes = data.nodes.map((n: any) => ({
-          ...n,
-          type: "default", // use default for now, can customize
-          style: getNodeStyle(n.data.type),
-          data: { label: formatNodeLabel(n.data) }
-        }));
-        
-        const initialEdges = data.edges.map((e: any) => ({
-          ...e,
-          animated: e.label === "depends_on" || e.label === "conflicts_with",
-          style: { stroke: e.label === "conflicts_with" ? "#ef4444" : "#94a3b8" }
-        }));
-
-        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges);
+        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+          data.nodes,
+          data.edges
+        );
         setNodes(layoutedNodes);
         setEdges(layoutedEdges);
       })
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [params.id]);
 
-  if (loading) return <div className="p-8">Loading graph...</div>;
-
   return (
-    <div className="h-screen flex flex-col">
-      <div className="p-4 border-b flex justify-between items-center bg-white">
+    <div className="max-w-8xl mx-auto px-6 lg:px-10 py-10">
+      <div className="mb-10 pb-6 border-b border-ink-200 flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-serif text-gray-900">Knowledge Graph</h1>
+          <div className="num-label mb-2">DAG Viewer</div>
+          <h1 className="font-display text-4xl tracking-tightish text-ink-900">Contract graph</h1>
+          <p className="text-sm text-ink-500 mt-1">Interactive DAG visualization.</p>
         </div>
-        <ContractNav contractId={params.id} />
       </div>
-      <div className="flex-grow">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          fitView
-        >
-          <Controls />
-          <MiniMap />
-          <Background gap={12} size={1} />
-        </ReactFlow>
+
+      <div className="card overflow-hidden relative" style={{ height: '600px' }}>
+        {loading ? (
+          <div className="flex h-full items-center justify-center">
+            <Loader2 className="w-6 h-6 animate-spin text-ink-400" />
+          </div>
+        ) : (
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            fitView
+            className="bg-paper-100"
+          >
+            <Background color="#d8d3c5" gap={24} size={1.5} />
+            <Controls className="bg-paper-50 border border-ink-200 rounded-sm" />
+          </ReactFlow>
+        )}
       </div>
     </div>
   );
-}
-
-function getNodeStyle(type: string) {
-  switch (type) {
-    case "Party":
-      return { background: "#f8fafc", border: "2px solid #cbd5e1", borderRadius: "50%", width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' };
-    case "Clause":
-      return { background: "#ffffff", border: "2px solid #e2e8f0", borderRadius: "8px", padding: 10 };
-    case "Obligation":
-      return { background: "#eff6ff", border: "2px solid #bfdbfe", borderRadius: "8px", padding: 10 };
-    case "Deadline":
-      return { background: "#fef2f2", border: "2px solid #fecaca", borderRadius: "8px", padding: 10 };
-    case "Event":
-      return { background: "#fffbeb", border: "2px solid #fde68a", borderRadius: "0px", transform: "rotate(45deg)" }; // Mock diamond
-    default:
-      return {};
-  }
-}
-
-function formatNodeLabel(data: any) {
-  if (data.type === "Event") {
-    return <div style={{ transform: "rotate(-45deg)" }}>{data.label}</div>;
-  }
-  if (data.type === "Clause") return `Clause: ${data.label}`;
-  return data.label;
 }

@@ -1,21 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+  body {
+    @apply bg-paper-100 text-ink-900 font-sans antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::selection {
+    @apply bg-clay-300/40 text-ink-900;
+  }
+}
+
+@layer components {
+  .rule {
+    @apply border-t border-ink-200;
+  }
+  .rule-b {
+    @apply border-b border-ink-200;
+  }
+  .num-label {
+    @apply font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400;
+  }
+  .section-num {
+    @apply font-mono text-xs text-clay-500 tabular-nums;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-ink-900 text-paper-100 px-5 py-2.5 text-sm font-medium rounded-sm hover:bg-ink-800 transition-colors duration-150;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-ink-700 px-4 py-2.5 text-sm font-medium rounded-sm hover:bg-ink-100 transition-colors duration-150;
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border border-ink-300 text-ink-800 px-5 py-2.5 text-sm font-medium rounded-sm hover:bg-ink-100 transition-colors duration-150;
+  }
+  .card {
+    @apply bg-paper-50 border border-ink-200 rounded-sm;
+  }
+  .input-field {
+    @apply w-full bg-paper-50 border border-ink-200 rounded-sm px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-ink-700 transition-colors;
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fade-up 0.5s ease-out both;
+}
+@keyframes dash-flow {
+  to { stroke-dashoffset: -16; }
+}
+.dash-flow {
+  stroke-dasharray: 4 4;
+  animation: dash-flow 0.8s linear infinite;
+}
+@keyframes pulse-node {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.pulse-node {
+  animation: pulse-node 1.4s ease-in-out infinite;
 }

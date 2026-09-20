@@ -1,143 +1,128 @@
 "use client";
 
-import { useState } from "react";
-import { simulateEvent } from "../../../../lib/api";
-import ContractNav from "../../../../components/ContractNav";
-import Link from "next/link";
-import { Play, ArrowRight, AlertTriangle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import ClauseSourceLink from "../../../../components/ClauseSourceLink";
+import { useState } from 'react';
+import { ArrowRight, Loader2, Check, X, CornerDownRight } from 'lucide-react';
+import { simulateEvent } from '../../../../lib/api';
+import Link from 'next/link';
 
-export default function Simulator({ params }: { params: { id: string } }) {
-  const [query, setQuery] = useState("");
-  const [result, setResult] = useState<any>(null);
+const suggestions = [
+  'vendor missed the SLA',
+  'when can we terminate?',
+  'what is the liability cap?',
+  'notice period for breach',
+];
+
+export default function Query({ params }: { params: { id: string } }) {
+  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [result, setResult] = useState<any | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+  const runQuery = async (q: string) => {
+    setInput(q);
     setLoading(true);
-    setError("");
     setResult(null);
     try {
-      const data = await simulateEvent(params.id, query);
-      setResult(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to run simulation");
-    } finally {
+      const data = await simulateEvent(params.id, q);
+      // Wait for dramatic effect of traversing
+      setTimeout(() => {
+        setResult(data);
+        setLoading(false);
+      }, 1000);
+    } catch (err) {
+      console.error(err);
       setLoading(false);
+      setResult({ consequence_chain: ["Error executing graph traversal."] });
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-8 p-4">
-      <div className="flex justify-between items-center mb-8 border-b pb-4">
-        <div>
-          <h1 className="text-3xl font-serif text-gray-900 mb-2">Event Simulator</h1>
-          <p className="text-sm text-gray-500">Trace the consequences of real-world events.</p>
-        </div>
-        <ContractNav contractId={params.id} />
+    <div className="max-w-4xl mx-auto px-6 lg:px-10 py-10">
+      <div className="mb-10 pb-6 border-b border-ink-200">
+        <div className="num-label mb-2">Simulator</div>
+        <h1 className="font-display text-4xl tracking-tightish text-ink-900">Event Simulator</h1>
+        <p className="text-sm text-ink-500 mt-1">Natural language in. Deterministic consequence chain out — with strict citations.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="mb-12">
-        <div className="flex gap-4">
-          <input 
-            type="text" 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g., vendor missed the SLA today"
-            className="flex-grow p-4 border rounded shadow-sm text-lg"
-          />
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="bg-indigo-600 text-white px-8 py-4 rounded font-bold shadow hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
-          >
-            {loading ? "Simulating..." : <><Play size={20} /> Run Event</>}
-          </button>
-        </div>
-      </form>
+      {/* Input */}
+      <div className="card p-2 mb-6 flex items-center gap-2">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && input.trim() && runQuery(input)}
+          placeholder="e.g. vendor missed the SLA"
+          className="flex-1 bg-transparent px-4 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none font-mono"
+        />
+        <button
+          onClick={() => input.trim() && runQuery(input)}
+          disabled={!input.trim() || loading}
+          className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+          Traverse
+        </button>
+      </div>
 
-      {error && <div className="p-4 bg-red-50 text-red-700 border border-red-200 rounded">{error}</div>}
-
-      {loading && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-700 mb-6">Tracing Consequences...</h3>
-          {[1, 2, 3].map((step) => (
-            <motion.div
-              key={step}
-              initial={{ opacity: 0.5 }}
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity, delay: step * 0.2 }}
-              className="p-6 bg-gray-50 border border-gray-200 rounded-lg flex items-start gap-4 shadow-sm"
+      {/* Suggestions */}
+      {!result && !loading && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          {suggestions.map((s) => (
+            <button
+              key={s}
+              onClick={() => runQuery(s)}
+              className="px-3 py-1.5 text-xs font-mono text-ink-600 border border-ink-200 rounded-sm hover:bg-ink-100 transition-colors"
             >
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
-              <div className="w-full space-y-3">
-                <div className="h-4 bg-gray-200 rounded w-1/4" />
-                <div className="h-6 bg-gray-200 rounded w-3/4" />
-                <div className="h-16 bg-gray-100 rounded w-full mt-4" />
-              </div>
-            </motion.div>
+              {s}
+            </button>
           ))}
         </div>
       )}
 
-      {result && result.needs_clarification && (
-        <div className="p-8 bg-amber-50 border border-amber-200 rounded text-center">
-          <AlertTriangle className="mx-auto text-amber-500 mb-4" size={48} />
-          <h2 className="text-xl font-semibold text-amber-800 mb-2">Human Review Required</h2>
-          <p className="text-amber-700">{result.message}</p>
+      {/* Loading */}
+      {loading && (
+        <div className="card p-8 fade-up">
+          <div className="flex items-center gap-3 mb-6">
+            <Loader2 className="w-5 h-5 text-clay-500 animate-spin" />
+            <span className="font-mono text-sm text-ink-600">Traversing DAG...</span>
+          </div>
+          <div className="space-y-2.5">
+            {['Evaluating trigger nodes', 'Walking consequence edges', 'Computing temporal logic', 'Resolving citations'].map((s) => (
+              <div key={s} className="flex items-center gap-2 text-sm text-ink-400">
+                <CornerDownRight className="w-3.5 h-3.5" />
+                {s}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {result && !result.needs_clarification && result.chain && (
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-6">Consequence Chain</h3>
-          <AnimatePresence>
-            {result.chain.map((step: any, index: number) => (
-              <motion.div
-                key={step.node_id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.6 }}
-                className={`relative p-6 border rounded-lg shadow-sm flex items-start gap-4 ${step.type === 'Conflict' ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200'}`}
-              >
-                {/* Visual line connecting steps */}
-                {index < result.chain.length - 1 && (
-                  <div className="absolute left-[39px] top-16 bottom-[-24px] w-0.5 bg-gray-200 z-0" />
-                )}
-                
-                <div className="z-10 bg-white rounded-full p-2 border-2 border-indigo-200 flex-shrink-0">
-                  <ArrowRight className="text-indigo-500" size={20} />
+      {/* Result */}
+      {result && !loading && (
+        <div className="fade-up space-y-6">
+          {/* Consequence */}
+          <div className="card p-8">
+            <div className="num-label mb-3">Consequence Chain</div>
+            <div className="space-y-4 mb-6">
+              {result.consequence_chain?.map((step: string, i: number) => (
+                <div key={i} className="flex gap-4 items-start">
+                  <span className="font-mono text-xs text-ink-300 mt-1">0{i+1}</span>
+                  <p className="font-display text-2xl text-ink-900 leading-snug tracking-tightish">
+                    {step}
+                  </p>
                 </div>
-                
-                <div className="flex-grow">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className={`text-xs font-bold px-2 py-1 uppercase tracking-wider rounded ${step.type === 'Conflict' ? 'bg-red-200 text-red-900' : 'bg-blue-100 text-blue-800'}`}>
-                      {step.owner}
-                    </span>
-                    {step.source_ref && (
-                      <ClauseSourceLink contractId={params.id} clauseId={step.node_id.replace('clause_', '')} />
-                    )}
-                  </div>
-                  
-                  <p className="text-lg font-medium text-gray-900 mb-3">{step.action}</p>
-                  
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <div><strong>Deadline:</strong> {new Date(step.deadline).toLocaleDateString()}</div>
-                    <div><strong>Confidence:</strong> {(step.confidence * 100).toFixed(0)}%</div>
-                  </div>
-                  
-                  {step.source_clause && (
-                    <div className="mt-4 p-3 bg-gray-50 border border-gray-100 rounded text-xs text-gray-600 font-serif italic">
-                      "{step.source_clause}"
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              ))}
+            </div>
+            
+            {result.relevant_clauses && result.relevant_clauses.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-ink-200 items-center">
+                <span className="num-label mt-1">Citations:</span>
+                {result.relevant_clauses.map((c: any, idx: number) => (
+                  <span key={idx} className="font-mono text-xs text-clay-600 bg-clay-50 px-2 py-0.5 rounded-sm border border-clay-200">
+                    {c.section_ref}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
