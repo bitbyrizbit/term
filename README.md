@@ -24,6 +24,12 @@ Semantically diffs sequential contract versions. Filters cosmetic wording from m
 ### 4. Risk Radar
 A categorical risk evaluation matrix. Refuses arbitrary scoring in favor of concrete, cited next-actions tied to specific clauses.
 
+<br/>
+<img src="docs/graph.png" alt="Knowledge Graph" width="800"/>
+<br/>
+<img src="docs/simulator.png" alt="Event Simulator Mid-Trace" width="800"/>
+<br/>
+
 ## The Engineering Reality
 
 Wrapping a PDF in a chatbot is trivial. Making a contract executable requires solving hard, deterministic problems:
@@ -48,7 +54,7 @@ Wrapping a PDF in a chatbot is trivial. Making a contract executable requires so
 (PyMuPDF Parser) -> Text & Section Headers
      |
      v
-(Groq / Llama 3) -> Structured JSON Extraction
+(Groq / gpt-oss-20b) -> Structured JSON Extraction
      |
      v
 [Supabase DB] -> Clauses & Obligations
