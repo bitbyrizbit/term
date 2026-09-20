@@ -1,39 +1,30 @@
 import numpy as np
-from sentence_transformers import SentenceTransformer
-
-# Load model lazily to save memory during startup
-_model = None
-
-def get_model():
-    global _model
-    if _model is None:
-        # Extremely lightweight local embedding model
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _model
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 def retrieve_context(query: str, clauses: list, top_k: int = 3) -> list:
     """
-    Retrieves the top-k most semantically relevant clauses using local embeddings.
+    Retrieves the top-k most semantically relevant clauses using lightweight TF-IDF.
+    This bypasses the need for heavy PyTorch embedding models on free tiers.
     """
     if not clauses:
         return []
         
-    model = get_model()
-    
     corpus = [c.get("text", "") for c in clauses]
     
-    query_emb = model.encode([query])[0]
-    corpus_emb = model.encode(corpus)
+    # Initialize TF-IDF Vectorizer
+    vectorizer = TfidfVectorizer(stop_words='english')
+    
+    # Fit and transform the corpus and query
+    try:
+        tfidf_matrix = vectorizer.fit_transform(corpus)
+        query_vec = vectorizer.transform([query])
+    except ValueError:
+        # Failsafe if corpus is entirely empty or stopwords
+        return clauses[:top_k]
     
     # Compute Cosine Similarity
-    query_norm = np.linalg.norm(query_emb)
-    corpus_norms = np.linalg.norm(corpus_emb, axis=1)
-    
-    # Avoid division by zero
-    query_norm = query_norm if query_norm != 0 else 1e-10
-    corpus_norms = np.where(corpus_norms == 0, 1e-10, corpus_norms)
-    
-    sims = np.dot(corpus_emb, query_emb) / (corpus_norms * query_norm)
+    sims = cosine_similarity(query_vec, tfidf_matrix).flatten()
     
     top_indices = np.argsort(sims)[-top_k:][::-1]
     
