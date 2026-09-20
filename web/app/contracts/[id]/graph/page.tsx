@@ -31,29 +31,43 @@ const getLayoutedElements = (nodes: any[], edges: any[], direction = "TB") => {
     };
     
     // Style nodes according to the new UI aesthetic
-    const ntype = node.data?.type || 'obligation';
-    let bgColor = '#fdfcf8';
-    let borderColor = '#9c937b';
-    let labelColor = '#15130e';
-    
-    if (ntype === 'trigger') {
-       bgColor = '#fbf3ee'; borderColor = '#c97744'; labelColor = '#7d3a1c';
-    } else if (ntype === 'consequence') {
-       bgColor = 'rgba(194,91,62,0.1)'; borderColor = '#c25b3e'; labelColor = '#8a3621';
-    } else if (ntype === 'condition') {
-       bgColor = 'rgba(122,155,110,0.1)'; borderColor = '#5a7d50'; labelColor = '#44603b';
+    const ntype = node.data?.type || "Obligation";
+    let bgColor = "#fdfcf8";
+    let borderColor = "#9c937b";
+    let labelColor = "#15130e";
+    let bRadius = "2px";
+    let pPad = "12px";
+
+    if (ntype === "Party") {
+       bgColor = "#f8fafc"; borderColor = "#cbd5e1"; bRadius = "50%"; pPad = "30px";
+    } else if (ntype === "Clause") {
+       bgColor = "#ffffff"; borderColor = "#e2e8f0"; bRadius = "8px"; pPad = "10px";
+    } else if (ntype === "Obligation") {
+       bgColor = "#eff6ff"; borderColor = "#bfdbfe"; bRadius = "8px"; pPad = "10px";
+    } else if (ntype === "Deadline") {
+       bgColor = "#fef2f2"; borderColor = "#fecaca"; bRadius = "8px"; pPad = "10px";
+    } else if (ntype === "Event") {
+       bgColor = "#fffbeb"; borderColor = "#fde68a"; bRadius = "0px"; pPad = "10px";
     }
-    
+
     node.style = {
       background: bgColor,
-      border: `1px solid ${borderColor}`,
+      border: "2px solid " + borderColor,
       color: labelColor,
-      borderRadius: '2px',
-      padding: '12px',
-      fontFamily: '"Inter Tight", system-ui, sans-serif',
-      fontSize: '12px',
+      borderRadius: bRadius,
+      padding: pPad,
+      fontFamily: "\"Inter Tight\", system-ui, sans-serif",
+      fontSize: "12px",
       width: 250,
+      textAlign: "center"
     };
+
+    if (ntype === "Clause" && node.data.label && !node.data.label.startsWith("Clause:")) {
+      node.data.label = "Clause: " + node.data.label;
+    }
+    if (ntype === "Event" && node.data.label && !node.data.label.startsWith("?")) {
+      node.data.label = "? " + node.data.label;
+    }
   });
 
   return { nodes, edges };
@@ -109,5 +123,7 @@ export default function KnowledgeGraph({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+
 
 
