@@ -85,7 +85,7 @@ Wrapping a PDF in a chatbot is trivial. Making a contract executable requires so
 
 ## Synthetic Test Environment
 
-The repository includes `saas_subscription.pdf` and two additional mock contracts within the `tests/` directory. Real contracts carry confidentiality risks and highly inconsistent formatting. These synthetic documents provide a deterministic baseline to validate the graph traversal logic under controlled conditions.
+The repository includes `saas_subscription.pdf` and two additional mock contracts within the `test-contracts/` directory. Real contracts carry confidentiality risks and highly inconsistent formatting. These synthetic documents provide a deterministic baseline to validate the graph traversal logic under controlled conditions.
 
 ## System Constraints
 
