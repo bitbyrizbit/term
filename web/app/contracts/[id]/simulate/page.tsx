@@ -78,34 +78,42 @@ export default function Query({ params }: { params: { id: string } }) {
       {/* Result */}
       {result && !loading && (
         <div className="fade-up space-y-6">
-          {/* Consequence */}
           <div className="card p-8">
             <div className="num-label mb-3">Consequence Chain</div>
-            <div className="space-y-4 mb-6">
-              {result.consequence_chain?.map((step: string, i: number) => (
-                <div key={i} className="flex gap-4 items-start">
-                  <span className="font-mono text-xs text-ink-300 mt-1">0{i+1}</span>
-                  <p className="font-display text-2xl text-ink-900 leading-snug tracking-tightish">
-                    {step}
-                  </p>
-                </div>
-              ))}
-            </div>
             
-            {result.relevant_clauses && result.relevant_clauses.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-ink-200 items-center">
-                <span className="num-label mt-1">Citations:</span>
-                {result.relevant_clauses.map((c: any, idx: number) => (
-                  <span key={idx} className="font-mono text-xs text-clay-600 bg-clay-50 px-2 py-0.5 rounded-sm border border-clay-200">
-                    {c.section_ref}
-                  </span>
-                ))}
+            {result.needs_clarification ? (
+              <div className="text-sm text-amber-600 bg-amber-50 p-4 rounded border border-amber-200">
+                {result.message}
               </div>
+            ) : (
+              <>
+                <div className="space-y-4 mb-6">
+                  {result.consequence_chain?.map((step: string, i: number) => (
+                    <div key={i} className="flex gap-4 items-start">
+                      <span className="font-mono text-xs text-ink-300 mt-1">0{i+1}</span>
+                      <p className="font-display text-2xl text-ink-900 leading-snug tracking-tightish">
+                        {step}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                
+                {result.relevant_clauses && result.relevant_clauses.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-ink-200 items-center">
+                    <span className="num-label mt-1">Citations:</span>
+                    {result.relevant_clauses.map((c: any, idx: number) => (
+                      <span key={idx} className="font-mono text-xs text-clay-600 bg-clay-50 px-2 py-0.5 rounded-sm border border-clay-200">
+                        {c.section_ref}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
-      )}
-    </div>
+      )}    </div>
   );
 }
+
 
