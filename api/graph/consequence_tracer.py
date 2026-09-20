@@ -48,25 +48,54 @@ def trace_consequences(G: nx.DiGraph, event_node_id: str, max_depth: int = 6) ->
                 "confidence": 0.95
             })
             
-            # Check for conflicts on this clause to extend the chain
+            # Check for conflicts and dependencies on this clause to extend the chain
             if clause_id:
                 c_node = f"clause_{clause_id}"
+                
+                # Check outgoing edges from this clause
                 for succ in G.successors(c_node):
                     e_data = G.get_edge_data(c_node, succ)
-                    if e_data and e_data.get("relation") == "conflicts_with":
-                        if succ not in visited:
-                            visited.add(succ)
-                            target_ref = G.nodes[succ].get("label", "")
-                            chain.append({
-                                "node_id": succ,
-                                "type": "Conflict",
-                                "action": f"Conflict detected with {target_ref}: {e_data.get('reason', '')}",
-                                "owner": "System Warning",
-                                "deadline": trigger_date.isoformat(),
-                                "source_clause": G.nodes[succ].get("text", ""),
-                                "source_ref": target_ref,
-                                "confidence": 0.88
-                            })
+                    if not e_data: continue
+                    
+                    relation = e_data.get("relation")
+                    target_ref = G.nodes[succ].get("label", "")
+                    target_text = G.nodes[succ].get("text", "")
+                    
+                    if relation == "conflicts_with" and succ not in visited:
+                        visited.add(succ)
+                        chain.append({
+                            "node_id": succ,
+                            "type": "Conflict",
+                            "action": f"Conflict detected with {target_ref}: {e_data.get('reason', '')}",
+                            "owner": "System Warning",
+                            "deadline": trigger_date.isoformat(),
+                            "source_clause": target_text,
+                            "source_ref": target_ref,
+                            "confidence": 0.88
+                        })
+                        
+                    elif relation == "depends_on" and succ not in visited:
+                        # Escalation or related clause
+                        queue.append((succ, trigger_date + relativedelta(days=5), depth + 1))
+                        
+                # Also check incoming depends_on edges to this clause (if another clause depends on this one)
+                for pred in G.predecessors(c_node):
+                    e_data = G.get_edge_data(pred, c_node)
+                    if e_data and e_data.get("relation") == "depends_on" and pred not in visited:
+                        queue.append((pred, trigger_date + relativedelta(days=5), depth + 1))
+                        
+        # Handle Clause nodes directly if they were added to the queue via clause-to-clause dependencies
+        elif node_data.get("type") == "Clause":
+            chain.append({
+                "node_id": current_node,
+                "type": "Escalation",
+                "action": f"Escalation triggered in {node_data.get('label')}",
+                "owner": "Legal / Management",
+                "deadline": trigger_date.isoformat(),
+                "source_clause": node_data.get("text", ""),
+                "source_ref": node_data.get("label", ""),
+                "confidence": 0.90
+            })
 
         # 1. Find Obligations that depend on this node
         # For Event nodes, incoming edges are 'depends_on' from Obligations
