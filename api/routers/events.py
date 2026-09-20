@@ -19,6 +19,8 @@ def simulate_event(contract_id: str, request: EventRequest):
         raise HTTPException(status_code=404, detail="Contract not found")
         
     G = build_contract_graph(clauses)
+    from graph.dependency_linker import link_dependencies
+    G = link_dependencies(G, clauses)
     
     # 1. Gather all Event nodes from the graph
     events = []
