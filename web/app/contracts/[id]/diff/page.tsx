@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { computeVersionDiff } from "../../../../lib/api";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Upload, ArrowRight, ShieldAlert, FileText } from "lucide-react";
 
@@ -33,11 +35,7 @@ export default function DiffPage({ params }: { params: { id: string } }) {
           <h1 className="text-3xl font-serif text-gray-900 mb-2">Version Diff & Impact</h1>
           <p className="text-sm text-gray-500">Upload a revised PDF to trace how changes affect the graph.</p>
         </div>
-        <div className="flex gap-4">
-          <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document</Link>
-          <Link href={`/contracts/${params.id}/graph`} className="text-sm text-blue-600 hover:underline">Graph</Link>
-          <Link href={`/contracts/${params.id}/risk`} className="text-sm text-blue-600 hover:underline">Risk</Link>
-        </div>
+        <ContractNav contractId={params.id} />
       </div>
 
       {!result && (

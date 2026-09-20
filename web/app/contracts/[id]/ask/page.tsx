@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { askQuestion } from "../../../../lib/api";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Search, AlertTriangle, ShieldCheck } from "lucide-react";
 import ClauseSourceLink from "../../../../components/ClauseSourceLink";
@@ -35,11 +37,7 @@ export default function QAPanel({ params }: { params: { id: string } }) {
           <h1 className="text-3xl font-serif text-gray-900 mb-2">Explainable Q&A</h1>
           <p className="text-sm text-gray-500">Ask strictly grounded questions about this contract.</p>
         </div>
-        <div className="flex gap-4">
-          <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document</Link>
-          <Link href={`/contracts/${params.id}/graph`} className="text-sm text-blue-600 hover:underline">Graph</Link>
-          <Link href={`/contracts/${params.id}/simulate`} className="text-sm text-blue-600 hover:underline">Simulator</Link>
-        </div>
+        <ContractNav contractId={params.id} />
       </div>
 
       <form onSubmit={handleSubmit} className="mb-8">
@@ -62,6 +60,24 @@ export default function QAPanel({ params }: { params: { id: string } }) {
       </form>
 
       {error && <div className="p-4 bg-red-50 text-red-700 border border-red-200 rounded">{error}</div>}
+
+      {loading && (
+        <div className="border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden p-6 space-y-6">
+          <div className="animate-pulse flex space-x-4">
+            <div className="flex-1 space-y-4 py-1">
+              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+          </div>
+          <div className="animate-pulse flex space-x-4 pt-6 border-t">
+            <div className="flex-1 space-y-4 py-1">
+              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {result && (
         <div className="border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden">

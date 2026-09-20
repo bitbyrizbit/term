@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getRiskRadar } from "../../../../lib/api";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Shield, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import ClauseSourceLink from "../../../../components/ClauseSourceLink";
@@ -27,11 +29,7 @@ export default function RiskRadarPage({ params }: { params: { id: string } }) {
           <p className="text-sm text-gray-500">Rubric-based risk evaluation with justified next actions.</p>
         </div>
         <div className="flex items-center gap-6">
-          <div className="flex gap-4 border-r pr-6">
-            <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document</Link>
-            <Link href={`/contracts/${params.id}/graph`} className="text-sm text-blue-600 hover:underline">Graph</Link>
-            <Link href={`/contracts/${params.id}/diff`} className="text-sm text-blue-600 hover:underline">Diff</Link>
-          </div>
+          <ContractNav contractId={params.id} />
           <ExportReportButton contractId={params.id} />
         </div>
       </div>

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { getContractObligations, getContractStatus } from "../../../../lib/api";
 import ClauseSourceLink from "../../../../components/ClauseSourceLink";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Clock, CheckCircle2, AlertCircle, Calendar } from "lucide-react";
 
@@ -34,12 +36,7 @@ export default function ObligationsCommandCenter({ params }: { params: { id: str
           <h1 className="text-3xl font-serif text-gray-900 mb-2">Command Center</h1>
           <p className="text-sm text-gray-500">Active obligations and deadlines.</p>
         </div>
-        <div className="flex gap-4">
-          <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document View</Link>
-          <Link href={`/contracts/${params.id}/graph`} className="text-sm text-blue-600 hover:underline">Knowledge Graph</Link>
-          <Link href={`/contracts/${params.id}/simulate`} className="text-sm text-blue-600 hover:underline">Simulator</Link>
-          <Link href={`/contracts/${params.id}/ask`} className="text-sm text-blue-600 hover:underline">Q&A</Link>
-        </div>
+        <ContractNav contractId={params.id} />
       </div>
 
       {/* Summary Stats */}

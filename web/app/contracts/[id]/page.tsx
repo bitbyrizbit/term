@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getContractStatus, Contract } from "../../../lib/api";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 
 export default function ContractPage({ params }: { params: { id: string } }) {
@@ -49,14 +51,7 @@ export default function ContractPage({ params }: { params: { id: string } }) {
             </span>
           </div>
         </div>
-        <div className="flex gap-4">
-          <Link href={`/contracts/${contract.id}/graph`} className="text-sm text-blue-600 hover:underline">Knowledge Graph</Link>
-          <Link href={`/contracts/${contract.id}/obligations`} className="text-sm text-blue-600 hover:underline">Command Center</Link>
-          <Link href={`/contracts/${contract.id}/simulate`} className="text-sm text-blue-600 hover:underline">Simulator</Link>
-          <Link href={`/contracts/${contract.id}/ask`} className="text-sm text-blue-600 hover:underline">Q&A</Link>
-          <Link href={`/contracts/${contract.id}/diff`} className="text-sm text-blue-600 hover:underline">Diff</Link>
-          <Link href={`/contracts/${contract.id}/risk`} className="text-sm text-blue-600 hover:underline">Risk Radar</Link>
-        </div>
+        <ContractNav contractId={params.id} />
       </div>
 
       {contract.status === "processing" && (

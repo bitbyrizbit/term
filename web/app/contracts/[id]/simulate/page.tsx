@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { simulateEvent } from "../../../../lib/api";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import { Play, ArrowRight, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -36,11 +38,7 @@ export default function Simulator({ params }: { params: { id: string } }) {
           <h1 className="text-3xl font-serif text-gray-900 mb-2">Event Simulator</h1>
           <p className="text-sm text-gray-500">Trace the consequences of real-world events.</p>
         </div>
-        <div className="flex gap-4">
-          <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document</Link>
-          <Link href={`/contracts/${params.id}/graph`} className="text-sm text-blue-600 hover:underline">Graph</Link>
-          <Link href={`/contracts/${params.id}/ask`} className="text-sm text-blue-600 hover:underline">Q&A</Link>
-        </div>
+        <ContractNav contractId={params.id} />
       </div>
 
       <form onSubmit={handleSubmit} className="mb-12">
@@ -63,6 +61,28 @@ export default function Simulator({ params }: { params: { id: string } }) {
       </form>
 
       {error && <div className="p-4 bg-red-50 text-red-700 border border-red-200 rounded">{error}</div>}
+
+      {loading && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-700 mb-6">Tracing Consequences...</h3>
+          {[1, 2, 3].map((step) => (
+            <motion.div
+              key={step}
+              initial={{ opacity: 0.5 }}
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: step * 0.2 }}
+              className="p-6 bg-gray-50 border border-gray-200 rounded-lg flex items-start gap-4 shadow-sm"
+            >
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
+              <div className="w-full space-y-3">
+                <div className="h-4 bg-gray-200 rounded w-1/4" />
+                <div className="h-6 bg-gray-200 rounded w-3/4" />
+                <div className="h-16 bg-gray-100 rounded w-full mt-4" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       {result && result.needs_clarification && (
         <div className="p-8 bg-amber-50 border border-amber-200 rounded text-center">

@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { getContractGraph } from "../../../../lib/api";
+import ContractNav from "../../../../components/ContractNav";
+import ContractNav from "../../../components/ContractNav";
 import Link from "next/link";
 import dagre from "dagre";
 
@@ -77,12 +79,7 @@ export default function KnowledgeGraph({ params }: { params: { id: string } }) {
         <div>
           <h1 className="text-2xl font-serif text-gray-900">Knowledge Graph</h1>
         </div>
-        <div className="flex gap-4">
-          <Link href={`/contracts/${params.id}`} className="text-sm text-blue-600 hover:underline">Document View</Link>
-          <Link href={`/contracts/${params.id}/obligations`} className="text-sm text-blue-600 hover:underline">Command Center</Link>
-          <Link href={`/contracts/${params.id}/simulate`} className="text-sm text-blue-600 hover:underline">Simulator</Link>
-          <Link href={`/contracts/${params.id}/ask`} className="text-sm text-blue-600 hover:underline">Q&A</Link>
-        </div>
+        <ContractNav contractId={params.id} />
       </div>
       <div className="flex-grow">
         <ReactFlow
