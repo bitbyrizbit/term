@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getContractStatus, Contract } from "../../../lib/api";
 import { ArrowLeft, GitBranch, MessageSquare, Download, Play } from 'lucide-react';
+import ExportReportButton from "../../../components/ExportReportButton";
 import { StatusBadge, RiskMeter } from "../../../components/StatusBadge";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
@@ -24,15 +25,15 @@ export default function ContractPage({ params }: { params: { id: string } }) {
         const uiData = {
           id: data.id.substring(0, 8),
           title: data.filename,
-          counterparty: 'Unknown Counterparty',
+          counterparty: '-',
           type: 'MSA',
           status: data.status === 'processing' ? 'draft' : 'active',
-          riskScore: Math.floor(Math.random() * 40) + 10,
-          value: '$' + (Math.floor(Math.random() * 50) + 10) + 'k',
+          riskScore: 0,
+          value: 'N/A',
           obligations: data.clauses ? data.clauses.length : 0,
-          triggers: Math.floor(Math.random() * 5) + 1,
-          effectiveDate: '2024-01-01',
-          expiryDate: '2025-01-01',
+          triggers: 0,
+          effectiveDate: 'N/A',
+          expiryDate: 'N/A',
           clauses: data.clauses || []
         };
         
@@ -91,10 +92,7 @@ export default function ContractPage({ params }: { params: { id: string } }) {
               View graph
             </Link>
           </div>
-          <button className="btn-ghost text-xs">
-            <Download className="w-3.5 h-3.5" />
-            Export
-          </button>
+          <ExportReportButton contractId={params.id} className="btn-ghost text-xs" />
         </div>
       </div>
 
@@ -165,3 +163,7 @@ export default function ContractPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+
+
+

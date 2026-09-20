@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function fetchWithBypass(url: string, options: any = {}) {
   const headers = options.headers || {};
@@ -116,4 +116,5 @@ export async function getAllContracts(): Promise<any[]> {
   if (!res.ok) throw new Error('Failed to fetch contracts');
   return res.json();
 }
+
 

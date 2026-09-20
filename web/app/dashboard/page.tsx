@@ -20,13 +20,13 @@ export default function Dashboard() {
         const formatted = data.map((c: any) => ({
           id: c.id,
           title: c.filename,
-          counterparty: 'Unknown Counterparty',
+          counterparty: '-',
           type: 'MSA',
           status: c.status === 'processing' ? 'draft' : 'active',
-          riskScore: Math.floor(Math.random() * 40) + 10,
-          value: '$' + (Math.floor(Math.random() * 50) + 10) + 'k',
-          obligations: Math.floor(Math.random() * 20) + 5,
-          triggers: Math.floor(Math.random() * 10) + 2,
+          riskScore: 0,
+          value: 'N/A',
+          obligations: 0,
+          triggers: 0,
         }));
         setContracts(formatted);
       } catch (err) {
@@ -51,7 +51,7 @@ export default function Dashboard() {
     { icon: FileText, label: 'Active Documents', value: contracts.length, accent: 'text-ink-700' },
     { icon: CalendarClock, label: 'Upcoming Renewals', value: contracts.filter((c) => c.status === 'expiring').length, accent: 'text-clay-600' },
     { icon: ShieldAlert, label: 'Flagged Risks', value: contracts.filter((c) => c.status === 'breached').length, accent: 'text-rust-600' },
-    { icon: Activity, label: 'Avg. Risk Score', value: contracts.length ? Math.round(contracts.reduce((a, c) => a + c.riskScore, 0) / contracts.length) : 0, accent: 'text-ink-700' },
+    { icon: Activity, label: 'Avg. Risk Score', value: contracts.length ? 0 : 0, accent: 'text-ink-700' },
   ];
 
   return (
@@ -158,3 +158,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

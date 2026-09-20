@@ -35,7 +35,7 @@ export default function Navbar() {
             TERM
           </span>
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-400 hidden sm:inline group-hover:text-clay-500 transition-colors">
-            Executable Contract Graph
+            Between the words and what follows.
           </span>
         </Link>
 
@@ -57,11 +57,10 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <span className="font-mono text-xs text-ink-400 hidden md:inline">v1.0.0</span>
-          <div className="w-8 h-8 rounded-full bg-clay-400/20 border border-clay-300 flex items-center justify-center">
-            <span className="font-mono text-xs text-clay-700 font-semibold">RN</span>
-          </div>
+          
         </div>
       </div>
     </header>
   );
 }
+

@@ -5,12 +5,7 @@ import { ArrowRight, Loader2, Check, X, CornerDownRight } from 'lucide-react';
 import { simulateEvent } from '../../../../lib/api';
 import Link from 'next/link';
 
-const suggestions = [
-  'vendor missed the SLA',
-  'when can we terminate?',
-  'what is the liability cap?',
-  'notice period for breach',
-];
+
 
 export default function Query({ params }: { params: { id: string } }) {
   const [input, setInput] = useState('');
@@ -61,21 +56,6 @@ export default function Query({ params }: { params: { id: string } }) {
           Traverse
         </button>
       </div>
-
-      {/* Suggestions */}
-      {!result && !loading && (
-        <div className="flex flex-wrap gap-2 mb-8">
-          {suggestions.map((s) => (
-            <button
-              key={s}
-              onClick={() => runQuery(s)}
-              className="px-3 py-1.5 text-xs font-mono text-ink-600 border border-ink-200 rounded-sm hover:bg-ink-100 transition-colors"
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Loading */}
       {loading && (
@@ -128,3 +108,4 @@ export default function Query({ params }: { params: { id: string } }) {
     </div>
   );
 }
+

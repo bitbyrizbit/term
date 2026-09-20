@@ -11,8 +11,7 @@ export default function Landing() {
         <div className="max-w-8xl mx-auto px-6 lg:px-10 pt-24 pb-20">
           <div className="grid grid-cols-12 gap-8 items-end">
             <div className="col-span-12 lg:col-span-8">
-              <div className="num-label mb-6">001 / The Executable Contract Graph</div>
-              <h1 className="font-display text-[5.5rem] leading-[0.95] tracking-tighter2 text-ink-900 mb-8">
+                            <h1 className="font-display text-[5.5rem] leading-[0.95] tracking-tighter2 text-ink-900 mb-8">
                 Between the words<br />
                 <span className="italic text-clay-500">and what follows.</span>
               </h1>
@@ -54,8 +53,7 @@ export default function Landing() {
         <div className="max-w-8xl mx-auto px-6 lg:px-10 py-20">
           <div className="grid grid-cols-12 gap-8">
             <div className="col-span-12 lg:col-span-3">
-              <div className="section-num mb-2">002</div>
-              <h2 className="font-display text-3xl tracking-tightish text-ink-900">The Problem</h2>
+                            <h2 className="font-display text-3xl tracking-tightish text-ink-900">The Problem</h2>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <p className="text-lg text-ink-700 leading-relaxed mb-6">
@@ -91,8 +89,7 @@ export default function Landing() {
       {/* How it works */}
       <section className="border-b border-ink-200 bg-paper-50">
         <div className="max-w-8xl mx-auto px-6 lg:px-10 py-20">
-          <div className="section-num mb-2">003</div>
-          <h2 className="font-display text-3xl tracking-tightish text-ink-900 mb-12">How it works</h2>
+                    <h2 className="font-display text-3xl tracking-tightish text-ink-900 mb-12">How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-200">
             {[
               {
@@ -129,8 +126,7 @@ export default function Landing() {
         <div className="max-w-8xl mx-auto px-6 lg:px-10 py-24">
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
             <div>
-              <div className="num-label mb-3">004 / Get started</div>
-              <h2 className="font-display text-5xl tracking-tightish text-ink-900 max-w-xl leading-tight">
+                            <h2 className="font-display text-5xl tracking-tightish text-ink-900 max-w-xl leading-tight">
                 Stop reading contracts.<br />
                 Start executing them.
               </h2>
@@ -157,3 +153,4 @@ export default function Landing() {
     </div>
   );
 }
+
