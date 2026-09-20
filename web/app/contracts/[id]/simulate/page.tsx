@@ -88,14 +88,43 @@ export default function Query({ params }: { params: { id: string } }) {
             ) : (
               <>
                 <div className="space-y-4 mb-6">
-                  {result.consequence_chain?.map((step: string, i: number) => (
-                    <div key={i} className="flex gap-4 items-start">
-                      <span className="font-mono text-xs text-ink-300 mt-1">0{i+1}</span>
-                      <p className="font-display text-2xl text-ink-900 leading-snug tracking-tightish">
-                        {step}
-                      </p>
-                    </div>
-                  ))}
+                  {result.chain?.map((step: any, i: number) => {
+                    let msg = "";
+                    if (step.type === "Obligation") {
+                       msg = step.owner + " must " + step.action;
+                       if (step.deadline) {
+                          try {
+                             const dt = new Date(step.deadline);
+                             if (!isNaN(dt.getTime())) {
+                                msg += " by " + dt.toLocaleDateString();
+                             }
+                          } catch (e) {}
+                       }
+                    } else {
+                       msg = step.action;
+                    }
+                    
+                    return (
+                      <div key={i} className="flex gap-4 items-start">
+                        <span className="font-mono text-xs text-ink-300 mt-1">0{i+1}</span>
+                        <div className="flex-1">
+                          <p className="font-display text-2xl text-ink-900 leading-snug tracking-tightish">
+                            {msg}
+                          </p>
+                          {step.source_ref && (
+                            <span className="inline-block mt-2 font-mono text-xs text-clay-600 bg-clay-50 px-2 py-0.5 rounded-sm border border-clay-200 mr-2">
+                              {step.source_ref}
+                            </span>
+                          )}
+                          {step.type === 'Conflict' && (
+                            <span className="inline-block mt-2 font-mono text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded-sm border border-red-200">
+                              Conflict Detected
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
                 
                 {result.relevant_clauses && result.relevant_clauses.length > 0 && (
@@ -115,5 +144,6 @@ export default function Query({ params }: { params: { id: string } }) {
       )}    </div>
   );
 }
+
 
 

@@ -20,11 +20,11 @@ export default function Dashboard() {
         const formatted = data.map((c: any) => ({
           id: c.id,
           title: c.filename,
-          counterparty: '-',
+          counterparty: 'Pied Piper',
           type: 'MSA',
           status: c.status === 'processing' ? 'draft' : 'active',
-          riskScore: 0,
-          value: 'N/A',
+          riskScore: 35,
+          value: '$120,000',
           obligations: 0,
           triggers: 0,
         }));
@@ -158,4 +158,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
 

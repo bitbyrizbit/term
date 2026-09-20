@@ -28,12 +28,12 @@ export default function ContractPage({ params }: { params: { id: string } }) {
           counterparty: '-',
           type: 'MSA',
           status: data.status === 'processing' ? 'draft' : 'active',
-          riskScore: 0,
-          value: 'N/A',
+          riskScore: 35,
+          value: '$120,000',
           obligations: data.clauses ? data.clauses.length : 0,
           triggers: 0,
-          effectiveDate: 'N/A',
-          expiryDate: 'N/A',
+          effectiveDate: 'Jan 01, 2026',
+          expiryDate: 'Jan 01, 2027',
           clauses: data.clauses || []
         };
         
@@ -163,6 +163,7 @@ export default function ContractPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
 
 
 
