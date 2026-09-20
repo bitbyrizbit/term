@@ -85,3 +85,21 @@ export async function askQuestion(id: string, query: string): Promise<any> {
   return res.json();
 }
 
+
+export async function computeVersionDiff(id: string, file: File): Promise<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(`${API_BASE}/contracts/${id}/diff`, {
+    method: 'POST',
+    body: formData
+  });
+  if (!res.ok) throw new Error('Failed to compute diff');
+  return res.json();
+}
+
+export async function getRiskRadar(id: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/contracts/${id}/risk`);
+  if (!res.ok) throw new Error('Failed to get risk radar');
+  return res.json();
+}
+

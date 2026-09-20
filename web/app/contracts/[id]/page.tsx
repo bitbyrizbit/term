@@ -54,6 +54,8 @@ export default function ContractPage({ params }: { params: { id: string } }) {
           <Link href={`/contracts/${contract.id}/obligations`} className="text-sm text-blue-600 hover:underline">Command Center</Link>
           <Link href={`/contracts/${contract.id}/simulate`} className="text-sm text-blue-600 hover:underline">Simulator</Link>
           <Link href={`/contracts/${contract.id}/ask`} className="text-sm text-blue-600 hover:underline">Q&A</Link>
+          <Link href={`/contracts/${contract.id}/diff`} className="text-sm text-blue-600 hover:underline">Diff</Link>
+          <Link href={`/contracts/${contract.id}/risk`} className="text-sm text-blue-600 hover:underline">Risk Radar</Link>
         </div>
       </div>
 

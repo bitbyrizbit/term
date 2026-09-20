@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import contracts, graph, obligations, events, qa
+from routers import contracts, graph, obligations, events, qa, versions, risk
 
 app = FastAPI(title="Term API")
 
@@ -18,6 +18,8 @@ app.include_router(graph.router)
 app.include_router(obligations.router)
 app.include_router(events.router)
 app.include_router(qa.router)
+app.include_router(versions.router)
+app.include_router(risk.router)
 
 @app.get("/")
 def read_root():
