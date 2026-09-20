@@ -59,7 +59,7 @@ def extract_clause_data(text: str) -> dict:
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": prompt}
             ],
-            model="openai/gpt-oss-20b", # Using available model on this tier
+            model="llama3-8b-8192", # Using available model on this tier
             temperature=0,
             response_format={"type": "json_object"}
         )
@@ -79,3 +79,4 @@ def extract_clause_data(text: str) -> dict:
             "obligations": [],
             "references_to_other_sections": []
         }
+

@@ -34,10 +34,21 @@ export default function Upload() {
     try {
       const res = await uploadContract(file);
       setContractId(res.id);
-      
-      // We simulate the progress visually, but it takes actual time on backend
-      // Polling or waiting... our uploadContract API blocks until extraction is done.
-      setStage('compiled');
+      const checkStatus = async () => {
+        try {
+          const { getContractStatus } = await import('../../lib/api');
+          const statusRes = await getContractStatus(res.id);
+          if (statusRes.status === 'completed') {
+            setStage('compiled');
+          } else if (statusRes.status === 'failed') {
+            setError('Backend failed to process');
+            setStage('error');
+          } else {
+            setTimeout(checkStatus, 3000);
+          }
+        } catch (e: any) { setError(e.message); setStage('error'); }
+      };
+      setTimeout(checkStatus, 3000);
     } catch (err: any) {
       setError(err.message || "Failed to compile contract");
       setStage('error');
@@ -161,3 +172,4 @@ export default function Upload() {
     </div>
   );
 }
+
