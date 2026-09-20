@@ -147,10 +147,11 @@ export default function Landing() {
       <footer className="border-t border-ink-200">
         <div className="max-w-8xl mx-auto px-6 lg:px-10 py-8 flex items-center justify-between">
           <span className="font-display text-lg text-ink-900">TERM</span>
-          <span className="font-mono text-xs text-ink-400">The Executable Contract Graph — v1.0.0</span>
+          <span className="font-mono text-xs text-ink-400">Between the words and what follows.</span>
         </div>
       </footer>
     </div>
   );
 }
+
 
