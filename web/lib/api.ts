@@ -1,5 +1,12 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+async function fetchWithBypass(url: string, options: any = {}) {
+  const headers = options.headers || {};
+  headers['ngrok-skip-browser-warning'] = 'true';
+  return fetch(url, { ...options, headers });
+}
+
+
 export interface Obligation {
   owner: string;
   action: string;
@@ -32,7 +39,7 @@ export async function uploadContract(file: File): Promise<Contract> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch(`${API_BASE}/contracts/upload`, {
+  const res = await fetchWithBypass(`${API_BASE}/contracts/upload`, {
     method: "POST",
     body: formData,
   });
@@ -45,7 +52,7 @@ export async function uploadContract(file: File): Promise<Contract> {
 }
 
 export async function getContractStatus(id: string): Promise<Contract> {
-  const res = await fetch(`${API_BASE}/contracts/${id}`);
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}`);
   if (!res.ok) {
     throw new Error("Failed to fetch contract");
   }
@@ -53,20 +60,20 @@ export async function getContractStatus(id: string): Promise<Contract> {
 }
 
 export async function getContractGraph(id: string): Promise<{nodes: any[], edges: any[]}> {
-  const res = await fetch(`${API_BASE}/contracts/${id}/graph`);
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}/graph`);
   if (!res.ok) throw new Error('Failed to fetch graph');
   return res.json();
 }
 
 export async function getContractObligations(id: string): Promise<any> {
-  const res = await fetch(`${API_BASE}/contracts/${id}/obligations`);
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}/obligations`);
   if (!res.ok) throw new Error('Failed to fetch obligations');
   return res.json();
 }
 
 
 export async function simulateEvent(id: string, query: string): Promise<any> {
-  const res = await fetch(`${API_BASE}/contracts/${id}/events`, {
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}/events`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query })
@@ -76,7 +83,7 @@ export async function simulateEvent(id: string, query: string): Promise<any> {
 }
 
 export async function askQuestion(id: string, query: string): Promise<any> {
-  const res = await fetch(`${API_BASE}/contracts/${id}/ask`, {
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}/ask`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query })
@@ -89,7 +96,7 @@ export async function askQuestion(id: string, query: string): Promise<any> {
 export async function computeVersionDiff(id: string, file: File): Promise<any> {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await fetch(`${API_BASE}/contracts/${id}/diff`, {
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}/diff`, {
     method: 'POST',
     body: formData
   });
@@ -98,14 +105,14 @@ export async function computeVersionDiff(id: string, file: File): Promise<any> {
 }
 
 export async function getRiskRadar(id: string): Promise<any> {
-  const res = await fetch(`${API_BASE}/contracts/${id}/risk`);
+  const res = await fetchWithBypass(`${API_BASE}/contracts/${id}/risk`);
   if (!res.ok) throw new Error('Failed to get risk radar');
   return res.json();
 }
 
 
 export async function getAllContracts(): Promise<any[]> {
-  const res = await fetch(`${API_BASE}/contracts`);
+  const res = await fetchWithBypass(`${API_BASE}/contracts`);
   if (!res.ok) throw new Error('Failed to fetch contracts');
   return res.json();
 }
