@@ -2,7 +2,7 @@
 
 "Between the words and what follows."
 
-Contracts are the operating system of business, yet enterprise software treats them like dead text. We index them, search them, and file them. TERM abandons semantic search for deterministic execution. It compiles ambiguous legal language into a directed acyclic graph (DAG), treating obligations, triggers, and consequences as a state machine.
+Contracts are the operating system of business, yet enterprise software treats them like dead text. Most teams index them, search them, and file them. TERM abandons semantic search for deterministic execution. It compiles ambiguous legal language into a directed acyclic graph (DAG), treating obligations, triggers, and consequences as a state machine.
 
 ## The Problem
 
@@ -34,8 +34,8 @@ A categorical risk evaluation matrix. Refuses arbitrary scoring in favor of conc
 
 Wrapping a PDF in a chatbot is trivial. Making a contract executable requires solving hard, deterministic problems:
 - **Implicit Temporal Logic**: Resolving abstract legal timeframes ("48 hours", "30 days prior to expiration") against dynamic, real-world trigger dates.
-- **BFS Consequence Tracing**: Traversing backwards from an event to an obligation, then cascading across dependency edges to hit escalation rights without falling into infinite loops.
-- **Anti-Hallucination Validation**: An enforcement layer that strictly separates answers from reasoning, mathematically verifying that every cited section exists in the retrieved context before returning a payload.
+- **BFS Consequence Tracing**: Designing the traversal algorithm to walk backwards from an event to an obligation, then cascade across dependency edges to hit escalation rights without falling into infinite loops.
+- **Anti-Hallucination Validation**: Specifying a strict enforcement layer that separates answers from reasoning, mathematically verifying that every cited section exists in the retrieved context before returning a payload.
 
 ## Competitive Landscape
 
@@ -105,6 +105,12 @@ The repository includes `saas_subscription.pdf` and two additional mock contract
 2. **Ticketing Integration**: Connecting the consequence tracer to Jira/Linear via webhooks to auto-generate legal review tickets on the exact date an obligation triggers.
 3. **Pre-Signature Redlining**: Shifting the Version Diff engine left, allowing users to simulate the downstream impact of a counterparty's edit before executing the agreement.
 4. **Live API Monitoring**: Hooking the natural language event router to actual performance logs, automatically triggering the graph if SLA metrics drop below established thresholds.
+
+## Contribution Statement
+
+I architected and directed TERM, designing the contract knowledge graph schema, the implicit deadline resolution logic, the BFS-based consequence tracing algorithm, and the anti-hallucination citation validation layer, along with the overall system architecture, phase sequencing, and UX structure. 
+
+An AI coding agent was used strictly as an implementation tool to execute the codebase against these specifications—handling boilerplate, syntax, and routine API wiring under my direct technical supervision. Every architectural decision, algorithm design choice, and system constraint documented in this repository originated entirely from my direction, not from the agent's own judgment. 
 
 ## License
 
